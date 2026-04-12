@@ -27,22 +27,26 @@ import getAllReviews from './customHooks/getAllReviews'
 import { ClipLoader } from 'react-spinners'
 import axios from "axios";
 
+// Admin Panel Imports
+import AdminLayout from './components/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminCourses from './pages/admin/AdminCourses'
+import AdminReviews from './pages/admin/AdminReviews'
+import AdminOrders from './pages/admin/AdminOrders'
 
 export const serverUrl = "http://localhost:8000"
 
 axios.defaults.withCredentials = true;
 
 function App() {
-
   const { userData, loading } = useSelector(state => state.user)
 
-  
   getCurrentUser()
   getCouseData()
   getCreatorCourseData()
   getAllReviews()
 
-  
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -57,7 +61,6 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-
         {/* PUBLIC */}
         <Route path='/' element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -73,7 +76,7 @@ function App() {
         <Route path='/enrolledcourses' element={userData ? <EnrolledCourse /> : <Navigate to="/login" />} />
         <Route path='/viewlecture/:courseId' element={userData ? <ViewLecture /> : <Navigate to="/login" />} />
 
-        {/* ADMIN */}
+        {/* EDUCATOR */}
         <Route path='/dashboard' element={userData?.role === "educator" ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path='/courses' element={userData?.role === "educator" ? <Courses /> : <Navigate to="/login" />} />
         <Route path='/addcourses/:courseId' element={userData?.role === "educator" ? <AddCourses /> : <Navigate to="/login" />} />
@@ -81,6 +84,15 @@ function App() {
         <Route path='/createlecture/:courseId' element={userData?.role === "educator" ? <CreateLecture /> : <Navigate to="/login" />} />
         <Route path='/editlecture/:courseId/:lectureId' element={userData?.role === "educator" ? <EditLecture /> : <Navigate to="/login" />} />
 
+        {/* ADMIN PANEL */}
+        <Route path="/admin" element={userData?.role === "admin" ? <AdminLayout /> : <Navigate to="/login" />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="courses" element={<AdminCourses />} />
+          <Route path="reviews" element={<AdminReviews />} />
+          <Route path="orders" element={<AdminOrders />} />
+        </Route>
       </Routes>
     </>
   )

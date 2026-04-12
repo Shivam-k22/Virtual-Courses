@@ -59,63 +59,84 @@ function ViewCourse() {
     fetchCreator();
   }, [selectedCourseData]);
 
-  const handleEnroll = async () => {
+const handleEnroll = async () => {
   try {
-    // ✅ FREE COURSE
+    // FREE COURSE
     if (!selectedCourseData?.price || selectedCourseData.price === 0) {
       await axios.post(
         serverUrl + "/api/course/enroll-free",
         { courseId, userId: userData?._id },
         { withCredentials: true }
       );
-
       setIsEnrolled(true);
       toast.success("Enrolled Successfully");
       return;
     }
 
-    // ✅ STEP 1: CREATE ORDER
+    // PAID COURSE - CREATE ORDER
+    console.log("Creating order for course:", courseId);
     const { data: order } = await axios.post(
       serverUrl + "/api/payment/create-order",
       { courseId },
       { withCredentials: true }
     );
+    
+    console.log("Order created:", order);
 
-    // ✅ STEP 2: OPEN RAZORPAY
+    // OPEN RAZORPAY
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency,
       order_id: order.id,
-
+      name: "Virtual Courses",
+      description: selectedCourseData.title,
+      image: "/logo.jpg",
       handler: async (response) => {
+        console.log("Payment response:", response);
+        
         try {
-          // ✅ STEP 3: VERIFY PAYMENT
-          await axios.post(
+          // ✅ SEND ALL PAYMENT DETAILS
+          const verifyResponse = await axios.post(
             serverUrl + "/api/payment/verify-payment",
             {
-              ...response,
-              courseId,
-              userId: userData?._id   // 🔥 VERY IMPORTANT
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              courseId: courseId,
+              userId: userData?._id
             },
             { withCredentials: true }
           );
-
+          
+          console.log("Verification response:", verifyResponse.data);
+          
           setIsEnrolled(true);
-          toast.success("Payment Successful 🎉");
+          toast.success("Payment Successful! You are now enrolled 🎉");
+          
+          // Refresh user data
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+          
         } catch (err) {
-          console.log(err);
-          toast.error("Verification failed");
+          console.log("Verification error:", err);
+          toast.error(err.response?.data?.message || "Payment verification failed");
         }
       },
+      modal: {
+        ondismiss: function() {
+          toast.info("Payment cancelled");
+        }
+      }
     };
 
     const rzp = new window.Razorpay(options);
     rzp.open();
 
   } catch (error) {
-    console.log(error);
-    toast.error("Payment failed!!!!");
+    console.log("Enrollment error:", error);
+    toast.error(error.response?.data?.message || "Payment failed!");
   }
 };
 

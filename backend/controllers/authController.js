@@ -44,29 +44,42 @@ export const signUp=async (req,res)=>{
     }
 }
 
-export const login=async(req,res)=>{
+export const login = async (req, res) => {
     try {
-        let {email,password}= req.body
-        let user= await User.findOne({email})
-        if(!user){
-            return res.status(400).json({message:"user does not exist"})
+        let { email, password } = req.body
+        let user = await User.findOne({ email })
+        
+        if (!user) {
+            return res.status(400).json({ message: "user does not exist" })
         }
-        let isMatch =await bcrypt.compare(password, user.password)
-        if(!isMatch){
-            return res.status(400).json({message:"incorrect Password"})
+        
+        
+        if (user.isActive === false) {
+            return res.status(403).json({ message: "Account is deactivated. Please contact admin." })
         }
-        let token =await genToken(user._id)
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:false,
+        
+        let isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({ message: "incorrect Password" })
+        }
+        
+        let token = await genToken(user._id)
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        
+        
+        const userData = user.toObject()
+        delete userData.password
+        
+        return res.status(200).json(userData)
 
     } catch (error) {
         console.log("login error")
-        return res.status(500).json({message:`login Error ${error}`})
+        return res.status(500).json({ message: `login Error ${error}` })
     }
 }
 

@@ -134,6 +134,7 @@ useEffect(() => {
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-2.5">
 
+          {/* Educator Dashboard Button */}
           {userData?.role === "educator" && (
             <button
               onClick={() => navigate("/dashboard")}
@@ -144,6 +145,19 @@ useEffect(() => {
                 <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
               </svg>
               Dashboard
+            </button>
+          )}
+
+          {/* Admin Dashboard Button - Same style as educator button */}
+          {userData?.role === "admin" && (
+            <button
+              onClick={() => navigate("/admin/dashboard")}
+              className="flex items-center gap-1.5 px-4 py-2 text-[15px] font-medium text-gray-600 border border-gray-200 rounded-lg hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Admin Panel
             </button>
           )}
 
@@ -173,6 +187,36 @@ useEffect(() => {
                     <p className="text-[15px] font-semibold text-gray-900 truncate">{userData.name}</p>
                     <p className="text-[11px] text-gray-400 truncate">{userData.email}</p>
                   </div>
+                  
+                  {/* Admin Panel link in dropdown */}
+                  {userData?.role === "admin" && (
+                    <>
+                      <button onClick={() => { navigate("/admin/dashboard"); setShowPro(false) }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[15px] text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Admin Panel
+                      </button>
+                      <div className="mx-3 my-1.5 h-px bg-gray-100" />
+                    </>
+                  )}
+                  
+                  {/* Educator Dashboard link in dropdown */}
+                  {userData?.role === "educator" && (
+                    <>
+                      <button onClick={() => { navigate("/dashboard"); setShowPro(false) }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[15px] text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+                          <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+                        </svg>
+                        Dashboard
+                      </button>
+                      <div className="mx-3 my-1.5 h-px bg-gray-100" />
+                    </>
+                  )}
+                  
                   <button onClick={() => { navigate("/profile"); setShowPro(false) }}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-[15px] text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
@@ -306,6 +350,20 @@ useEffect(() => {
           {userData && (
             <>
               <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest px-2 mt-5 mb-2">Account</p>
+              
+              {/* Admin Panel link in mobile menu */}
+              {userData?.role === "admin" && (
+                <button onClick={() => { navigate("/admin/dashboard"); setShowHam(false) }}
+                  className="w-full flex items-center gap-3 px-3 py-3 text-[14px] font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all mb-0.5">
+                  <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                  </div>
+                  Admin Panel
+                </button>
+              )}
+              
               <button onClick={() => { navigate("/profile"); setShowHam(false) }}
                 className="w-full flex items-center gap-3 px-3 py-3 text-[14px] font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all mb-0.5">
                 <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">

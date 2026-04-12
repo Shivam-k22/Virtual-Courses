@@ -1,6 +1,5 @@
 import React from 'react'
 import about from "../assets/about.jpg"
-import VideoPlayer from './VideoPlayer'
 import { BiSolidBadgeCheck } from "react-icons/bi"
 import { HiOutlineAcademicCap } from "react-icons/hi2"
 import { useNavigate } from 'react-router-dom'
@@ -41,12 +40,6 @@ function About() {
               <span>50K+ Learners</span>
             </div>
           </div>
-
-          {/* Video player floated at bottom */}
-          <div className="absolute bottom-0 left-10 z-20">
-            <VideoPlayer />
-          </div>
-        </div>
 
         {/* ── Text column ── */}
         <div className="lg:w-7/12 w-full flex flex-col gap-6">
@@ -89,10 +82,8 @@ function About() {
             Learn More About Us
           </button>
         </div>
-
+        </div>
       </div>
-    </section>
-  )
-}
+    </section>)}
 
 export default About

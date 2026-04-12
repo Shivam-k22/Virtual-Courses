@@ -8,6 +8,7 @@ import userRouter from "./routes/userRoute.js"
 import courseRouter from "./routes/courseRoute.js"
 import paymentRouter from "./routes/paymentRoute.js"
 import reviewRouter from "./routes/reviewRoute.js"
+import adminRouter from "./routes/adminRoute.js"
 dotenv.config()
 
 let port = process.env.PORT
@@ -24,6 +25,7 @@ app.use("/api/user", userRouter)
 app.use("/api/course", courseRouter)
 app.use("/api/payment", paymentRouter)
 app.use("/api/review", reviewRouter)
+app.use("/api/admin", adminRouter)
 
 
 app.get("/" , (req,res)=>{
